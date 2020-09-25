@@ -50,6 +50,22 @@ def users():
 		cursor.close() 
 		conn.close()
 		
+# @app.route('/user/<int:id>')
+# def user(id):
+# 	try:
+# 		conn = mysql.connect()
+# 		cursor = conn.cursor(pymysql.cursors.DictCursor)
+# 		cursor.execute("SELECT user_id id, user_name name, user_email email, user_password pwd FROM tbl_user WHERE user_id=%s", id)
+# 		row = cursor.fetchone()
+# 		resp = jsonify(row)
+# 		resp.status_code = 200
+# 		return resp
+# 	except Exception as e:
+# 		print(e)
+# 	finally:
+# 		cursor.close() 
+# 		conn.close()
+
 @app.route('/user/<int:id>')
 def user(id):
 	try:
@@ -57,6 +73,11 @@ def user(id):
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute("SELECT user_id id, user_name name, user_email email, user_password pwd FROM tbl_user WHERE user_id=%s", id)
 		row = cursor.fetchone()
+		if row is None:
+			print('no user found')
+			resp = jsonify({'message': 'no user with id: '+str(id)})
+			resp.status_code = 200
+			return resp
 		resp = jsonify(row)
 		resp.status_code = 200
 		return resp
@@ -124,4 +145,4 @@ def not_found(error=None):
     return resp
 		
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
